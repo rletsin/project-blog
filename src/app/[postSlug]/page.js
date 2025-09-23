@@ -4,6 +4,9 @@ import BlogHero from '@/components/BlogHero';
 import { BLOG_TITLE } from '@/constants';
 import { loadBlogPost } from '@/helpers/file-helpers';
 import styles from './postSlug.module.css';
+import CodeSnippet from '@/components/CodeSnippet';
+import DivisionGroupsDemo from '@/components/DivisionGroupsDemo';
+import COMPONENT_MAP from '@/helpers/mdx-components';
 
 export async function generateMetadata({ params }) {
   const { postSlug } = await params;
@@ -29,7 +32,10 @@ async function BlogPost({ params }) {
         publishedOn={frontmatter.publishedOn}
       />
       <div className={styles.page}>
-        <MDXRemote source={content} />
+        <MDXRemote 
+          source={content}
+          components={COMPONENT_MAP}
+        />
       </div>
     </article>
   );
