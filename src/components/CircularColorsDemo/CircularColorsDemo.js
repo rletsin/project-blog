@@ -1,4 +1,6 @@
-import React from 'react';
+"use client";
+
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import {
   Play,
@@ -8,6 +10,7 @@ import {
 
 import Card from '@/components/Card';
 import VisuallyHidden from '@/components/VisuallyHidden';
+import { LayoutGroup, motion } from 'framer-motion';
 
 import styles from './CircularColorsDemo.module.css';
 
@@ -18,62 +21,73 @@ const COLORS = [
 ];
 
 function CircularColorsDemo() {
-  // TODO: This value should increase by 1 every second:
-  const timeElapsed = 0;
+  const id = React.useId();
 
-  // TODO: This value should cycle through the colors in the
-  // COLORS array:
-  const selectedColor = COLORS[0];
+  const [timeElapsed, setTimeElapsed] = React.useState(0);
+  const [isRunning, setIsRunning] = React.useState(false);
+
+  useEffect(() => {
+    if (!isRunning) {
+      return;
+    }
+    const timeoutId = setInterval(() => {
+        setTimeElapsed((currentTime) => currentTime + 1);
+    }, 1000);
+
+    return () => clearInterval(timeoutId);
+  }, [isRunning]);
+
+  const selectedColor = COLORS[timeElapsed % COLORS.length];
 
   return (
     <Card as="section" className={styles.wrapper}>
       <ul className={styles.colorsWrapper}>
         {COLORS.map((color, index) => {
-          const isSelected =
-            color.value === selectedColor.value;
+          const isSelected = color.value === selectedColor.value;
 
           return (
-            <li
-              className={styles.color}
-              key={index}
-            >
-              {isSelected && (
-                <div
-                  className={
-                    styles.selectedColorOutline
-                  }
-                />
-              )}
+            <motion.li className={styles.color} key={index} layout={true}>
+              {isSelected && <motion.div layoutId={`${id}-selected-color-outline`} className={styles.selectedColorOutline} />}
               <div
                 className={clsx(
                   styles.colorBox,
-                  isSelected &&
-                    styles.selectedColorBox
+                  isSelected && styles.selectedColorBox
                 )}
                 style={{
                   backgroundColor: color.value,
                 }}
+                layout={"position"}
               >
-                <VisuallyHidden>
-                  {color.label}
-                </VisuallyHidden>
+                <VisuallyHidden>{color.label}</VisuallyHidden>
               </div>
-            </li>
+            </motion.li>
           );
         })}
       </ul>
-
       <div className={styles.timeWrapper}>
         <dl className={styles.timeDisplay}>
           <dt>Time Elapsed</dt>
           <dd>{timeElapsed}</dd>
         </dl>
         <div className={styles.actions}>
-          <button>
-            <Play />
-            <VisuallyHidden>Play</VisuallyHidden>
-          </button>
-          <button>
+          {!isRunning ? (
+            <button onClick={() => setIsRunning(!isRunning)}>
+              <Play />
+              <VisuallyHidden>Play</VisuallyHidden>
+            </button>
+          ) : (
+            <button onClick={() => setIsRunning(!isRunning)}>
+              <Pause />
+              <VisuallyHidden>Pause</VisuallyHidden>
+            </button>
+          )}
+          <button
+            onClick={() => {
+              setIsRunning(false);
+              setTimeElapsed(0);
+              setSelectedColor(COLORS[0]);
+            }}
+          >
             <RotateCcw />
             <VisuallyHidden>Reset</VisuallyHidden>
           </button>
