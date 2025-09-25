@@ -6,7 +6,7 @@ import {
 import clsx from 'clsx';
 import { cookies } from 'next/headers';
 
-import { LIGHT_TOKENS, COLOR_THEME_COOKIE_NAME, DARK_TOKENS, BLOG_TITLE } from '@/constants';
+import { LIGHT_TOKENS, BLOG_DESCRIPTION, COLOR_THEME_COOKIE_NAME, DARK_TOKENS, BLOG_TITLE } from '@/constants';
 
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -29,7 +29,7 @@ const monoFont = Spline_Sans_Mono({
 
 export const metadata = {
   title: BLOG_TITLE,
-  description: 'A blog built with Next.js and MDX',
+  description: BLOG_DESCRIPTION,
 };
 
 async function RootLayout({ children }) {
