@@ -4,8 +4,9 @@ import {
   Spline_Sans_Mono,
 } from 'next/font/google';
 import clsx from 'clsx';
+import { cookies } from 'next/headers';
 
-import { LIGHT_TOKENS, DARK_TOKENS, BLOG_TITLE } from '@/constants';
+import { LIGHT_TOKENS, COLOR_THEME_COOKIE_NAME, DARK_TOKENS, BLOG_TITLE } from '@/constants';
 
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -31,9 +32,11 @@ export const metadata = {
   description: 'A blog built with Next.js and MDX',
 };
 
-function RootLayout({ children }) {
-  // TODO: Dynamic theme depending on user preference
-  const theme = 'light';
+async function RootLayout({ children }) {
+  const savedTheme = (await cookies()).get(
+    COLOR_THEME_COOKIE_NAME
+  );
+  const theme = savedTheme?.value || 'light';
 
   return (
     <RespectMotionPreferences>
@@ -44,7 +47,7 @@ function RootLayout({ children }) {
         style={theme === "light" ? LIGHT_TOKENS : DARK_TOKENS}
       >
         <body>
-          <Header theme={theme} />
+          <Header initialTheme={theme} />
           <main>{children}</main>
           <Footer />
         </body>
